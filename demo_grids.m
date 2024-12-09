@@ -4,10 +4,10 @@ close all;
 
 addpath('./utils');
 % name = 'jaffe';
-name = 'Yale';
+name = 'YaleB';
 % name = 'ORL';
 % name = 'Isolet';
-name = 'usps_random_1000';
+% name = 'usps_random_1000';
 % name = 'COIL20';
 % name = 'AR';
 load (name);
@@ -43,6 +43,7 @@ for i = 1 : length(parameters)
                 fprintf('alpha1 : %f, alpha2 : %f,lambda : %f, beta : %f\n', alpha1,alpha2,lambda,beta);
                 fprintf(fileID,'alpha1 : %f, alpha2 : %f, lambda : %f, beta : %f\n', alpha1,alpha2,lambda,beta);
                 [Z,W,obj]=SWARG(fea',nClusts,alpha1,alpha2,beta,lambda,NITER);
+%                 [Z,W,obj]=SWARG_RC(fea',nClusts,alpha1,alpha2,beta,NITER);
                 
                 addpath('Ncut_9');
                 A = Z;

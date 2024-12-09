@@ -1,4 +1,4 @@
-function [Z,W,obj]=SWARG(X,c,alpha1,alpha2,beta,lambda,NITER)
+function [Z,W,obj]=SWARG_RC(X,c,alpha1,alpha2,beta,NITER)
 % This code is implemented by Kun Jiang
 
 [d,n] = size(X);
@@ -22,8 +22,7 @@ for iter=1:NITER
     Z = Z*diag(sqrt(1./(diag(Z'*Z)+eps))); %normalize
     
     %update S
-    dist1 = L2_distance_1(F',F');
-    dist = dist1+alpha2*L2_distance_1(Z,Z)/lambda;
+    dist = alpha2*L2_distance_1(Z,Z);
     % for i=1:n
         % for j=1:n
             % S(i,j)=exp(-dist(i,j)/(2*beta))+eps;
@@ -33,9 +32,6 @@ for iter=1:NITER
 	S = exp(-dist / (2 * beta)) + eps;
 	S = S ./ sum(S, 2);
 
-	
-    LS = (S+S')/2;
-    L = diag(sum(LS)) - LS;
     
     %update W
     I= eye(n);
@@ -49,19 +45,7 @@ for iter=1:NITER
         W(i,i) = 1/(T(i,i) * temp1); 
     end
     
-    %update F
-    [F, ~, ev]=eig1(L, c, 0);
-    
-    fn1 = sum(ev(1:c));
-    fn2 = sum(ev(1:c+1));
-    if fn1 > 10e-11
-        lambda = 2*lambda;
-    elseif fn2 < 10e-11
-        lambda = lambda/2;
-    else
-        break;
-    end
-    
+
     %obj
     tran=0;
     for i1=1:n
@@ -70,7 +54,7 @@ for iter=1:NITER
         end
     end
     
-    obj(iter)=trace((W*X*Z-W*X)*(W*X*Z-W*X)')+alpha1*trace(Z*E)+alpha2*trace(Z'*L*Z)+2*lambda*(trace(F'*L*F)+beta*tran);
+%     obj(iter)=trace((W*X*Z-W*X)*(W*X*Z-W*X)')+alpha1*trace(Z*E)+alpha2*trace(Z'*L*Z);
 %     if iter>2
 %         if abs(obj(iter)-obj(iter-1))/obj(iter-1)<1e-8
 %             break
